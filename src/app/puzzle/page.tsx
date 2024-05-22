@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { fetchRandomSudoku } from "../lib/sudoku-fetcher";
+import { getRandomPictureFilePath } from "../lib/data/files";
 import { ApiSudoku } from "../lib/types/api-sudoku";
+import Image from "next/image";
 
 export default function Puzzle() {
   const [puzzle, setPuzzle] = useState({} as ApiSudoku);
@@ -11,9 +13,16 @@ export default function Puzzle() {
   puzzleRef.current = puzzle;
   const currentRowColumnIndexRef = useRef("");
   currentRowColumnIndexRef.current = currentRowColumnIndex;
+  const [randomPictureFilePath, setRandomPictureFilePath] = useState("");
 
   useEffect(() => {
     window.addEventListener("keydown", tryUpdateSudokuCell);
+    if (randomPictureFilePath === "") {
+      getRandomPictureFilePath().then((randomPictureFilePath) => {
+        console.log(randomPictureFilePath);
+        setRandomPictureFilePath(randomPictureFilePath);
+      });
+    }
     fetchRandomSudoku().then((puzzle) => {
       console.log("fetched puzzle:" + puzzle);
       setPuzzle(puzzle as ApiSudoku);
@@ -55,44 +64,66 @@ export default function Puzzle() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-      <h2 className="text-center">
+      <h2 className="text-center text-2xl">
         Difficulty: {puzzle?.newboard?.grids[0]?.difficulty}
       </h2>
-      <div className="flex justify-center items-center">
-        <div className="grid grid-cols-9 grid-rows-9 border-4 rounded-md">
-          {puzzle?.newboard?.grids[0]?.value?.map((row, rowIndex) =>
-            row.map((cell, colIndex) => {
-              const colRowIndex = `${rowIndex}-${colIndex}`;
+      <Image
+        src={
+          randomPictureFilePath != ""
+            ? `/${randomPictureFilePath}`
+            : "/bad-haircut.jpg"
+        }
+        alt="Overlay"
+        width={500}
+        height={500}
+        className="w-full h-full absolute opacity-30"
+      />
+      <div className="relative flex justify-center items-center">
+        <div className="relative">
+          {/* <div className="absolute inset-0 z-10 opacity-10 pointer-events-none">
+            <Image
+              src="/happy-cat.jpg"
+              alt="Overlay"
+              width={500}
+              height={500}
+              className="w-full h-full object-cover"
+            />
+          </div> */}
+          <div className="grid grid-cols-9 grid-rows-9 border-4 rounded-md z-20">
+            {puzzle?.newboard?.grids[0]?.value?.map((row, rowIndex) =>
+              row.map((cell, colIndex) => {
+                const colRowIndex = `${rowIndex}-${colIndex}`;
 
-              return (
-                <div
-                  key={colRowIndex}
-                  className={`w-12 h-12 flex justify-center items-center border ${
-                    (rowIndex + 1) % 3 === 0 && rowIndex !== 8
-                      ? "border-b-2 border-b-gray-300"
-                      : ""
-                  } ${
-                    (colIndex + 1) % 3 === 0 && colIndex !== 8
-                      ? "border-r-2 border-r-gray-300"
-                      : ""
-                  } text-center ${getCellBackgroundColour(colRowIndex, cell)}`}
-                  onClick={() => {
-                    if (cell && cellIsSolved(colRowIndex, cell)) return;
-                    return setCurrentRowColumnIndex(colRowIndex);
-                  }}
-                >
-                  <span className="text-2xl text-black">
-                    {cell !== 0 ? cell : ""}
-                  </span>
-                </div>
-              );
-            })
-          )}
+                return (
+                  <div
+                    key={colRowIndex}
+                    className={`w-12 h-12 flex justify-center items-center border ${
+                      (rowIndex + 1) % 3 === 0 && rowIndex !== 8
+                        ? "border-b-2 border-b-gray-300"
+                        : ""
+                    } ${
+                      (colIndex + 1) % 3 === 0 && colIndex !== 8
+                        ? "border-r-2 border-r-gray-300"
+                        : ""
+                    } text-center ${getCellBackgroundColour(
+                      colRowIndex,
+                      cell
+                    )}`}
+                    onClick={() => {
+                      if (cell && cellIsSolved(colRowIndex, cell)) return;
+                      return setCurrentRowColumnIndex(colRowIndex);
+                    }}
+                  >
+                    <span className="text-2xl text-black">
+                      {cell !== 0 ? cell : ""}
+                    </span>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       </div>
-      <button onClick={() => regeneratePuzzle()} className="bg-red-500">
-        Regenerate
-      </button>
     </div>
   );
 
