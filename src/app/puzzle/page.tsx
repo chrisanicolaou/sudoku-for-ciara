@@ -54,10 +54,12 @@ export default function Puzzle() {
   }
 
   return (
-    <>
-      <h2>Difficulty: {puzzle?.newboard?.grids[0]?.difficulty}</h2>
-      <div className="flex justify-center items-center min-h-screen bg-gray-100">
-        <div className="grid grid-cols-9 grid-rows-9 gap-0.5">
+    <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+      <h2 className="text-center">
+        Difficulty: {puzzle?.newboard?.grids[0]?.difficulty}
+      </h2>
+      <div className="flex justify-center items-center">
+        <div className="grid grid-cols-9 grid-rows-9 gap-0.5 bg-slate-400 border-4 rounded-md">
           {puzzle?.newboard?.grids[0]?.value?.map((row, rowIndex) =>
             row.map((cell, colIndex) => {
               const colRowIndex = `${rowIndex}-${colIndex}`;
@@ -91,8 +93,18 @@ export default function Puzzle() {
           )}
         </div>
       </div>
-    </>
+      <button onClick={() => regeneratePuzzle()} className="bg-red-500">
+        Regenerate
+      </button>
+    </div>
   );
+
+  function regeneratePuzzle() {
+    fetchRandomSudoku().then((puzzle) => {
+      setCurrentRowColumnIndex(() => "");
+      setPuzzle(puzzle as ApiSudoku);
+    });
+  }
 
   function getCellBackgroundColour(colRowIndex: string, cell: number) {
     if (
