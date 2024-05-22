@@ -69,22 +69,19 @@ export default function Puzzle() {
                   key={colRowIndex}
                   className={`w-12 h-12 flex justify-center items-center border ${
                     (rowIndex + 1) % 3 === 0 && rowIndex !== 8
-                      ? "border-b-2 border-b-black"
+                      ? "border-b-2 border-b-gray-300"
                       : ""
                   } ${
                     (colIndex + 1) % 3 === 0 && colIndex !== 8
-                      ? "border-r-2 border-r-black"
+                      ? "border-r-2 border-r-gray-300"
                       : ""
-                  } border-gray-300 text-center ${getCellBackgroundColour(
-                    colRowIndex,
-                    cell
-                  )}`}
+                  } text-center ${getCellBackgroundColour(colRowIndex, cell)}`}
                   onClick={() => {
                     if (cell && cellIsSolved(colRowIndex, cell)) return;
                     return setCurrentRowColumnIndex(colRowIndex);
                   }}
                 >
-                  <span className="text-lg text-black">
+                  <span className="text-2xl text-black">
                     {cell !== 0 ? cell : ""}
                   </span>
                 </div>
