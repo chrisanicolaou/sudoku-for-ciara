@@ -1,13 +1,20 @@
-import Image from "next/image";
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getRandomAffirmation } from "./lib/data/affirmations";
 
 export default function Home() {
+  const [affirmation, setAffirmation] = useState("");
+
+  useEffect(() => {
+    setAffirmation(getRandomAffirmation());
+  }, []);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Welcome to my app. I was too scared to put things directly in the Home
-      component, so please click this button to continue.
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-24">
+      {affirmation}
       <Link href="/puzzle" className="bg-emerald-600">
-        <span>Thanks</span>
+        <span>Take me to sudoku</span>
       </Link>
     </main>
   );

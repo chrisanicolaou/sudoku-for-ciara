@@ -59,7 +59,7 @@ export default function Puzzle() {
         Difficulty: {puzzle?.newboard?.grids[0]?.difficulty}
       </h2>
       <div className="flex justify-center items-center">
-        <div className="grid grid-cols-9 grid-rows-9 gap-0.5 bg-slate-400 border-4 rounded-md">
+        <div className="grid grid-cols-9 grid-rows-9 border-4 rounded-md">
           {puzzle?.newboard?.grids[0]?.value?.map((row, rowIndex) =>
             row.map((cell, colIndex) => {
               const colRowIndex = `${rowIndex}-${colIndex}`;
@@ -69,11 +69,11 @@ export default function Puzzle() {
                   key={colRowIndex}
                   className={`w-12 h-12 flex justify-center items-center border ${
                     (rowIndex + 1) % 3 === 0 && rowIndex !== 8
-                      ? "border-b-2"
+                      ? "border-b-2 border-b-black"
                       : ""
                   } ${
                     (colIndex + 1) % 3 === 0 && colIndex !== 8
-                      ? "border-r-2"
+                      ? "border-r-2 border-r-black"
                       : ""
                   } border-gray-300 text-center ${getCellBackgroundColour(
                     colRowIndex,
