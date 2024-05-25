@@ -2,7 +2,11 @@ import fs from "fs";
 import path from "path";
 
 export async function GET(_: Request) {
-  const directoryPath = path.join(process.cwd(), "public/images");
+  const isProduction = process.env.NODE_ENV == "production";
+  const directoryPath = path.join(
+    process.cwd(),
+    isProduction ? "/images" : "public/images"
+  );
   try {
     const files = fs.readdirSync(directoryPath);
     const imageFiles = files.filter((file) =>
