@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { fetchRandomSudoku } from "../lib/sudoku-fetcher";
-import { getRandomPictureFilePath } from "../lib/data/files";
 import { ApiSudoku } from "../lib/types/api-sudoku";
 import Image from "next/image";
 import { MdEditOff, MdModeEdit } from "react-icons/md";
@@ -21,9 +20,11 @@ export default function Puzzle() {
   useEffect(() => {
     window.addEventListener("keydown", tryUpdateSudokuCell);
     if (randomPictureFilePath === "") {
-      getRandomPictureFilePath().then((randomPictureFilePath) => {
-        console.log(randomPictureFilePath);
-        setRandomPictureFilePath(randomPictureFilePath);
+      fetch("/api/images").then((res) => {
+        res.json().then((data) => {
+          console.log(data);
+          setRandomPictureFilePath(data["image"]);
+        });
       });
     }
     fetchRandomSudoku().then((puzzle) => {
